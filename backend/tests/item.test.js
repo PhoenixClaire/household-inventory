@@ -24,6 +24,7 @@ afterAll(async () => {
     await mongoServer.stop();
 });
 
+//add item
 describe("POST /api/items", () => {
     it("should create a new item successfully", async () => {
         const response = await request(app).post("/api/items").send({
@@ -48,5 +49,24 @@ describe("POST /api/items", () => {
             expect(response.body.message).toBe("Failed to create item");
         });
     
+});
+
+//get all items
+describe ("GET /api/items", () => {
+    it("should return all items with stock status", async () => {
+        await Item.create({
+            name:"milk",
+            quantity: 1,
+            unit: "liter",
+            threshold: 2,
+        });
+
+        const response = await request(app).get("/api/items");
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.items.length).toBe(1); //since there's only 1 item in the list
+        expect(response.body.items[0].name).toBe("milk"); //first item on the list 
+        expect(response.body.items[0].stockStatus).toBe("Low Stock"); //first item on the list
+    });
 });
 
