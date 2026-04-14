@@ -70,3 +70,41 @@ describe ("GET /api/items", () => {
     });
 });
 
+//get shopping list
+describe("GET /api/items/shopping-list", () => {
+    it("should return only low stock or out of stock items", async () => {
+        await Item.create([
+            {
+                name: "Rice",
+                quantity: 5,
+                unit: "kg",
+                threshold: 2,
+            },
+            {
+                name: "Eggs",
+                quantity: 4,
+                unit: "pcs",
+                threshold: 6,
+            },
+            {
+                name: "Milk",
+                quantity: 0,
+                unit: "liter",
+                threshold: 1,
+            },
+        ]);
+
+        const response = await request(app).get("/api/items/shopping-list");
+
+        //2 items in the shopping list
+        expect(response.statusCode).toBe(200);
+        expect(response.body.message).toBe("Shopping list fetched successfully");
+        expect(response.body.items.length).toBe(2);
+
+        //verify rice is not in the list
+        const itemNames = response.body.items.map((item) => item.name);
+        expect(itemNames).toContain("Eggs");
+        expect(itemNames).toContain("Milk");
+        expect(itemNames).not.toContain("Rice");
+    });
+})

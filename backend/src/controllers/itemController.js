@@ -59,6 +59,99 @@ const getAllItems = async (req, res) => {
     }
 };
 
+//add item to the shopping list if <= threshold or == 0
+const getShoppingList = async (req, res) => {
+    try {
+        const items = await Item.find();
 
+        const shoppingList = items
+            .filter((item) => item.quantity === 0 || item.quantity <= item.threshold)
+            .map((item) => ({
+                ...item.toObject(),
+                stockStatus: getStockStatus(item.quantity, item.threshold),
+            }));
 
-module.exports = { createItem, getAllItems}; 
+            return res.status(200).json({
+                message: "Shopping list fetched successfully",
+                items: shoppingList,
+            });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Failed to fetch shopping list",
+            error: error.message,
+        });
+    }
+};
+
+//update items 
+const updateItem = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {
+            name,
+            quantity,
+            unit,
+            threshold
+        } = req.body || {};
+
+        const updatedItem = await Item.findByIdAndUpdate(
+            id,
+            {
+                name,
+                quantity,
+                unit,
+                threshold,
+            },
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
+
+        if(!updatedItem){
+            return res.status(404).json({
+                message: "Item not found",
+            });
+        }
+
+        return res.status(200).json({
+            message: "Item updated successfully",
+            item: {
+                ...updatedItem.toObject(),
+                stockStatus: getStockStatus(updateItem.quantity, updateItem.threshold),
+            },
+        });
+    } catch (error) {
+        return res.status(400).json({
+            message: "Failed to update item",
+            error: error.message,
+        });
+    }
+};
+
+//delete items 
+const deleteItem = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedItem = await Item.findByIdAndDelete(id);
+
+        if(!deleteItem){
+            return res.status(404).json({
+                message: "Item not found"
+            });
+        }
+
+        return res.status(200).json({
+            message: "Item deleted successfully",
+            item: deleteItem,
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            message: "Failed to delete item",
+            error: error.message,
+        });
+    }
+};
+
+module.exports = { createItem, getAllItems, getShoppingList, updateItem, deleteItem}; 
