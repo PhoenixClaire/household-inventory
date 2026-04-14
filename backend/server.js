@@ -1,4 +1,6 @@
-const { default: mongoose } = require("mongoose");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const app = require("./src/app");
 
 //starts the server
 dotenv.config();

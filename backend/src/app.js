@@ -2,6 +2,7 @@
 
 const express = require("express");
 const cors = require("cors");
+const itemRoutes = require("./routes/itemRoutes");
 
 const app = express();
 
@@ -14,5 +15,9 @@ app.get("/", (req, res) => {
         message: "App is running",
     });
 });
+
+//connect app to item routes
+app.use("/api/items", itemRoutes); 
+
 
 module.exports = app; //export app
