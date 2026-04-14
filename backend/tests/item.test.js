@@ -108,3 +108,78 @@ describe("GET /api/items/shopping-list", () => {
         expect(itemNames).not.toContain("Rice");
     });
 })
+
+//update
+describe("PUT /api/items/:id", () => {
+    it("should update an item successfully", async () => {
+        const item = await Item.create({
+            name: "Eggs",
+            quantity: 4,
+            unit: "pcs",
+            threshold: 6,
+        }); 
+
+        const response = await request(app)
+            .put(`/api/items/${item._id}`)
+            .send({
+                name: "Eggs",
+                quantity: 10,
+                unit: "pcs",
+                threshold: 6,
+            });
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.message).toBe("Item updated successfully");
+        expect(response.body.item.quantity).toBe(10);
+        expect(response.body.item.stockStatus).toBe("In Stock");
+    });
+
+    it("should return 404 when updating a non-existent item", async () => {
+        const fakeId = "507f1f77bcf86cd799439011";
+
+        const response = await request(app)
+            .put(`/api/items/${fakeId}`)
+            .send({
+                name: "Eggs",
+                quantity: 10,
+                unit: "pcs",
+                threshold: 6,
+            });
+
+        expect(response.statusCode).toBe(404);
+        expect(response.body.message).toBe("Item not found");
+    });
+
+});
+
+//delete 
+describe("DELETE /api/items/:id", () => {
+    it("should delete an item successfully", async () => {
+
+        //create the item
+        const item = await Item.create({
+            name: "Milk",
+            quantity: 1,
+            unit: "liter",
+            threshold: 2,
+        });
+
+        const response = await request(app).delete(`/api/items/${item._id}`); //delete the created item
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.message).toBe("Item deleted successfully");
+
+        const deletedItem = await Item.findById(item._id); //search for the deleted item
+        expect(deletedItem).toBeNull(); //verify that it no longer exists
+
+    });    
+
+    it("should return 404 when deleting a non-existent item", async () => {
+        const fakeId = "507f1f77bbf86cd799439011";
+
+        const response = await request(app).delete(`/api/items/${fakeId}`);
+
+        expect(response.statusCode).toBe(404);
+        expect(response.body.message).toBe("Item not found"); 
+    });
+});
