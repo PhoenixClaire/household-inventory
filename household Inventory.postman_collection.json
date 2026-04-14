@@ -1,0 +1,36 @@
+{
+    "_": {
+        "postman_id": "e27dcb28-b508-4ab3-9d80-4aa5ed7c266c"
+    },
+    "item": [
+        {
+            "id": "6a9c2416-8b55-47e3-90fe-d9cec9fffd6c",
+            "name": "create item",
+            "request": {
+                "url": {
+                    "protocol": "http",
+                    "port": "5000",
+                    "path": [
+                        "api",
+                        "items"
+                    ],
+                    "host": [
+                        "localhost"
+                    ],
+                    "query": [],
+                    "variable": []
+                },
+                "method": "POST"
+            },
+            "response": [],
+            "event": []
+        }
+    ],
+    "event": [],
+    "variable": [],
+    "info": {
+        "_postman_id": "e27dcb28-b508-4ab3-9d80-4aa5ed7c266c",
+        "name": "household Inventory",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    }
+}

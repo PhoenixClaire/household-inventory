@@ -27,6 +27,7 @@ const createItem = async(req, res) => {
                 ...newItem.toObject(),
                 stockStatus: getStockStatus(newItem.quantity, newItem.threshold),
             },
+            message: "Item created successfully"
         });
     } catch (error){
         return res.status(400).json({
