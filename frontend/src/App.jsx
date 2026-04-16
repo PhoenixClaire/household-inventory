@@ -7,7 +7,8 @@ import ShoppingList from "./components/ShoppingList";
 import {
   getAllItems,
   createItem,
-  getShoppingList
+  getShoppingList,
+  deleteItem
 } from "./services/itemService";
 
 import "./index.css";
@@ -65,17 +66,31 @@ function App(){
     }
   };
 
+  const handleDeleteItem = async (id) => {
+    try {
+      setError("");
+      await deleteItem(id);
+      await loadData();
+    } catch (err) {
+      console.error("Delete item error:", err);
+      setError(err.response?.data?.message || "Failed to delete item.");
+    }
+  };
+
   return (
     <div className="app-container">
       <h1>Household Inventory System</h1>
 
       {error && <p className="error-message">{error}</p>}
+
+      <InventoryForm onAddItem={handleAddItem} />
+
       {loading ? (
         <p>Loading...</p>
       ) : (
         <>
-          <InventoryForm onAddItem={handleAddItem} />
-          <InventoryList items={items} />
+          
+          <InventoryList items={items} onDeleteItem={handleDeleteItem}/>
           <ShoppingList items={shoppingItems} />
         </>
       )}
