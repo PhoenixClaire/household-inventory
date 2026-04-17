@@ -6,7 +6,15 @@ const itemRoutes = require("./routes/itemRoutes");
 
 const app = express();
 
-app.use(cors());
+app.use(
+    cors({
+        origin: [
+            "http://localhost:5173",
+            "https://household-inventory.vercel.app",
+        ]
+    })
+);
+
 app.use(express.json());
 
 //start
