@@ -8,21 +8,37 @@ const app = express();
 
 const allowedOrgins =  [
             "http://localhost:5173",
-            "https://household-inventory-3xzg9972v-phoenixclaires-projects.vercel.app/"
+            "https://household-inventory-l7i71bh9n-phoenixclaires-projects.vercel.app"
         ]
 
-app.use(
-    cors({
+// app.use(
+//     cors({
 
-        origin: function (origin, callback) {
-            if(!origin || allowedOrgins.includes(origin)){
-                callback(null, true);
-            } else {
-                callback(new Error("Not allowed by CORS")); 
-            }
-        },
+//         origin: function (origin, callback) {
+//             if(!origin || allowedOrgins.includes(origin)){
+//                 callback(null, true);
+//             } else {
+//                 callback(new Error("Not allowed by CORS")); 
+//             }
+//         },
         
-    })
+//     })
+// );
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (
+        !origin ||
+        origin === "http://localhost:5173" ||
+        origin.endsWith(".vercel.app")
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
 );
 
 app.use(express.json());
