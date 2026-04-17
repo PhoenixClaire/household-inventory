@@ -10,7 +10,7 @@ app.use(
     cors({
         origin: [
             "http://localhost:5173",
-            "https://household-inventory-k31epwvbq-phoenixclaires-projects.vercel.app/",
+            "https://household-inventory-3xzg9972v-phoenixclaires-projects.vercel.app/"
         ]
     })
 );
