@@ -6,12 +6,22 @@ const itemRoutes = require("./routes/itemRoutes");
 
 const app = express();
 
-app.use(
-    cors({
-        origin: [
+const allowedOrgins =  [
             "http://localhost:5173",
             "https://household-inventory-3xzg9972v-phoenixclaires-projects.vercel.app/"
         ]
+
+app.use(
+    cors({
+
+        origin: function (origin, callback) {
+            if(!origin || allowedOrgins.includes(origin)){
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS")); 
+            }
+        },
+        
     })
 );
 
