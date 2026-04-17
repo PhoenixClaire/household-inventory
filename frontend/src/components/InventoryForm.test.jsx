@@ -33,4 +33,28 @@ describe("InventoryForm", () => {
       threshold: 6,
     });
   });
+
+  it("prefills form fields when editingItem is provided", () => {
+    const editingItem = {
+                _id: "1",
+                name: "Eggs",
+                quantity: 4,
+                unit: "pcs",
+                threshold: "1",
+    };
+
+    render(
+      <InventoryForm
+        onAddItem={() => {}}
+        onUpdateItem={() => {}}
+        editingItem={editingItem}
+        onCancelEdit={() => {}}
+      />
+    );
+
+    expect(screen.getByDisplayValue("Eggs")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("4")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("pcs")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("1")).toBeInTheDocument();
+  });
 });

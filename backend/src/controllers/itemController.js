@@ -13,9 +13,20 @@ const createItem = async(req, res) => {
             threshold
         } = req.body; 
 
+        const normalizedName = name?.trim().toLowerCase();
+
+        const existingItem = await Item.findOne({ normalizedName }); 
+
+        if(existingItem){
+            return res.status(409).json({
+                message: "Item already exists in inventory."
+            });
+        }
+
         //save
         const newItem = await Item.create({
-            name,
+            name: name.trim(),
+            normalizedName,
             quantity,
             unit,
             threshold
@@ -94,10 +105,24 @@ const updateItem = async (req, res) => {
             threshold
         } = req.body || {};
 
+        const normalizedName = name?.trim().toLowerCase();
+
+        const duplicateItem = await Item.findOne({
+            normalizedName,
+            _id: { $ne: id },
+        });
+
+        if(duplicateItem){
+            return res.status(409).json({
+                message: "Another item with this name already exists."
+            });
+        }
+
         const updatedItem = await Item.findByIdAndUpdate(
             id,
             {
-                name,
+                name: name.trim(),
+                normalizedName,
                 quantity,
                 unit,
                 threshold,
@@ -118,7 +143,7 @@ const updateItem = async (req, res) => {
             message: "Item updated successfully",
             item: {
                 ...updatedItem.toObject(),
-                stockStatus: getStockStatus(updateItem.quantity, updateItem.threshold),
+                stockStatus: getStockStatus(updatedItem.quantity, updatedItem.threshold),
             },
         });
     } catch (error) {
@@ -143,7 +168,7 @@ const deleteItem = async (req, res) => {
 
         return res.status(200).json({
             message: "Item deleted successfully",
-            item: deleteItem,
+            item: deletedItem,
         });
 
     } catch (error) {

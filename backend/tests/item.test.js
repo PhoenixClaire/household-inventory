@@ -56,6 +56,7 @@ describe ("GET /api/items", () => {
     it("should return all items with stock status", async () => {
         await Item.create({
             name:"milk",
+            normalizedName: "milk",
             quantity: 1,
             unit: "liter",
             threshold: 2,
@@ -76,18 +77,21 @@ describe("GET /api/items/shopping-list", () => {
         await Item.create([
             {
                 name: "Rice",
+                normalizedName: "rice",
                 quantity: 5,
                 unit: "kg",
                 threshold: 2,
             },
             {
                 name: "Eggs",
+                normalizedName: "eggs",
                 quantity: 4,
                 unit: "pcs",
                 threshold: 6,
             },
             {
                 name: "Milk",
+                normalizedName: "milk",
                 quantity: 0,
                 unit: "liter",
                 threshold: 1,
@@ -114,6 +118,7 @@ describe("PUT /api/items/:id", () => {
     it("should update an item successfully", async () => {
         const item = await Item.create({
             name: "Eggs",
+            normalizedName: "eggs",
             quantity: 4,
             unit: "pcs",
             threshold: 6,
@@ -123,6 +128,7 @@ describe("PUT /api/items/:id", () => {
             .put(`/api/items/${item._id}`)
             .send({
                 name: "Eggs",
+                normalizedName: "eggs",
                 quantity: 10,
                 unit: "pcs",
                 threshold: 6,
@@ -141,6 +147,7 @@ describe("PUT /api/items/:id", () => {
             .put(`/api/items/${fakeId}`)
             .send({
                 name: "Eggs",
+                normalizedName: "eggs",
                 quantity: 10,
                 unit: "pcs",
                 threshold: 6,
@@ -159,6 +166,7 @@ describe("DELETE /api/items/:id", () => {
         //create the item
         const item = await Item.create({
             name: "Milk",
+            normalizedName: "milk",
             quantity: 1,
             unit: "liter",
             threshold: 2,

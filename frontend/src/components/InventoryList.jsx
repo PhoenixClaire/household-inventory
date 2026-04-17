@@ -1,4 +1,6 @@
-function InventoryList({ items, onDeleteItem }) {
+
+
+function InventoryList({ items, onDeleteItem,  onEditItem}) {
 
   const safeItems = Array.isArray(items) ? items : [];
 
@@ -6,6 +8,7 @@ function InventoryList({ items, onDeleteItem }) {
     if(status === "In Stock") return "status in-stock";
     if(status === "Low Stock") return "status low-stock";
     if(status === "Out of Stock") return "status out-of-stock";
+    return status;
   };
 
   return (
@@ -26,7 +29,10 @@ function InventoryList({ items, onDeleteItem }) {
                 </span>
               </div>
 
-              <button onClick={() => onDeleteItem(item._id)}>Delete</button>
+              <div className="item-actions">
+                <button onClick={() => onEditItem(item)}>Edit</button>
+                <button onClick={() => onDeleteItem(item._id)}>Delete</button>
+              </div>
             </li>
           ))}
         </ul>

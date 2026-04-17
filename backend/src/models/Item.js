@@ -7,6 +7,13 @@ const itemSchema = new mongoose.Schema(
             required: [true, "Item name is required"],
             trim: true,
         },
+        normalizedName:{
+            type: String,
+            required: true,
+            unique: true,
+            trim: true,
+            lowercase: true
+        },
         quantity: {
             type: Number,
             required: [true, "Quantity is required"],

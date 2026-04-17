@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from  "@testing-library/react";
 import InventoryList from "./InventoryList";
+import exp from "constants";
 
 describe("InventoryList", () => {
     it("renders inventory items", () => {
@@ -20,7 +21,10 @@ describe("InventoryList", () => {
             },
         ];
 
-        render(<InventoryList items={items} />);
+        render(<InventoryList 
+            items={items}
+            onDeleteItem={() => {}}
+            onEditItem={() => {}} />);
 
         //verify that the tiems are there
         expect(screen.getByText(/Eggs/i)).toBeInTheDocument(); 
@@ -51,12 +55,41 @@ describe("InventoryList", () => {
             },
        ];
 
-       render(<InventoryList items={items} onDeleteItem={mockDelete}/>);
+       render(<InventoryList 
+        items={items} 
+        onDeleteItem={mockDelete}
+        onEditItem={() => {}}/>);
 
        fireEvent.click(screen.getByRole("button", { name: /Delete/i }));
 
        expect(mockDelete).toHaveBeenCalledTimes(1);
        expect(mockDelete).toHaveBeenCalledWith("1");
     });
+
+    it("calls onEditItem when edit button is clicked", () => {
+    const mockEdit = vi.fn();
+
+    const items = [
+      {
+        _id: "1",
+        name: "Eggs",
+        quantity: 4,
+        unit: "pcs",
+        stockStatus: "Low Stock",
+      },
+    ];
+
+    render(
+      <InventoryList
+        items={items}
+        onDeleteItem={() => {}}
+        onEditItem={mockEdit}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Edit/i }));
+
+    expect(mockEdit).toHaveBeenCalledWith(items[0]);
+  });
 });
 

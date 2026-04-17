@@ -8,7 +8,8 @@ import {
   getAllItems,
   createItem,
   getShoppingList,
-  deleteItem
+  deleteItem, 
+  updateItem,
 } from "./services/itemService";
 
 import "./index.css";
@@ -17,8 +18,9 @@ function App(){
 
   const [items, setItems] = useState([]);
   const [shoppingItems, setShoppingItems] = useState([]);
-  const [loading, setLoading] = useState([true]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(""); 
+  const [editingItem, setEditingItem] = useState(null);
 
   const fetchItems = async () => {
     try {
@@ -59,6 +61,19 @@ function App(){
 
   const handleAddItem = async (newItem) => {
     try {
+
+      setError("");
+
+      const normalizedName = newItem.name.trim().toLowerCase();
+      const alreadyExists = items.some(
+        (item) => item.name.trim().toLowerCase() === normalizedName
+      );
+
+      if(alreadyExists) {
+        setError("Item already exists in inventory.");
+        return;
+      }
+
       await createItem(newItem);
       await loadData();
     } catch (err) {
@@ -77,20 +92,51 @@ function App(){
     }
   };
 
+  const handleEditItem = (item) => {
+    setEditingItem(item);
+  };
+
+  const handleUpdateItem = async (updatedData) => {
+    try {
+      setError("");
+
+      if(!editingItem) return;
+
+      await updateItem(editingItem._id, updatedData);
+      setEditingItem(null);
+      await loadData();
+      return true;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update item.");
+      return false; 
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingItem(null);
+  };
+
   return (
     <div className="app-container">
       <h1>Household Inventory System</h1>
 
       {error && <p className="error-message">{error}</p>}
 
-      <InventoryForm onAddItem={handleAddItem} />
+      <InventoryForm 
+        onAddItem={handleAddItem}
+        onUpdateItem={handleUpdateItem}
+        editingItem={editingItem}
+        onCancelEdit={handleCancelEdit} />
 
       {loading ? (
         <p>Loading...</p>
       ) : (
         <>
           
-          <InventoryList items={items} onDeleteItem={handleDeleteItem}/>
+          <InventoryList 
+            items={items} 
+            onDeleteItem={handleDeleteItem}
+            onEditItem={handleEditItem}/>
           <ShoppingList items={shoppingItems} />
         </>
       )}
