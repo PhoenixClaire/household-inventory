@@ -8,15 +8,17 @@ describe("ShoppingList", () => {
                 _id: "1",
                 name: "Milk",
                 quantity: 0,
-                unit: "liter",
+                unit: "liters",
                 stockStatus: "Out of Stock",
+                quantityToBuy: 3,
             },
         ];
 
         render(<ShoppingList items={items}/>)
 
         expect(screen.getByText(/Milk/i)).toBeInTheDocument();
-        expect(screen.getByText(/Out of Stock/i)).toBeInTheDocument();
+        expect(screen.getByText(/buy at least/i)).toBeInTheDocument();
+        expect(screen.getByText(/3 liters/i)).toBeInTheDocument();
     });
 
     it("renders empty state when no items need restocking", () => {

@@ -80,6 +80,7 @@ const getShoppingList = async (req, res) => {
             .map((item) => ({
                 ...item.toObject(),
                 stockStatus: getStockStatus(item.quantity, item.threshold),
+                quantityToBuy: item.threshold + 1 - item.quantity,
             }));
 
             return res.status(200).json({
